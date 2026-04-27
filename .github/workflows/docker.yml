@@ -1,0 +1,33 @@
+name: Build Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Backend
+        run: docker build -t ghcr.io/${{ github.repository }}/backend ./backend
+
+      - name: Build Frontend
+        run: docker build -t ghcr.io/${{ github.repository }}/frontend ./frontend
+
+      - name: Push Backend
+        run: docker push ghcr.io/${{ github.repository }}/backend
+
+      - name: Push Frontend
+        run: docker push ghcr.io/${{ github.repository }}/frontend
