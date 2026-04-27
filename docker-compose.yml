@@ -1,11 +1,10 @@
 services:
   backend:
-    build: ./backend
-    expose:
-      - "8000"
-    environment:
-      - MONGO_URI=mongodb+srv://dudecandy883:dudecandy883@cluster0.b97fe0t.mongodb.net
-
+  build: ./backend
+  expose:
+    - "3000"
+  env_file:
+    - ./backend/.env
   frontend:
     build: ./frontend
     expose:

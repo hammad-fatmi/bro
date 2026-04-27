@@ -36,7 +36,7 @@ export const register = async (req, res) => {
             password: hashedPassword,
         })
 
-        const token = jwt.sign({ id: newuser._id }, process.env.SECRET_KEY, { expiresIn: '10m' });
+        const token = jwt.sign({ id: newuser._id }, process.env.JWT_SECRET, { expiresIn: '10m' });
         console.log("Email:", email);
         await verifyEmail(token, email); //send email here 
         newuser.token = token
@@ -72,7 +72,7 @@ export const verify = async (req, res) => {
         let decoded;
 
         try {
-            decoded = jwt.verify(token, process.env.SECRET_KEY);
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
         } catch (error) {
             if (error.name === "TokenExpiredError") {
                 return res.status(400).json({
@@ -140,10 +140,10 @@ export const reVerify = async (req, res) => {
             });
         }
 
-        // Generate new token
+        // Generate new token1
         const token = jwt.sign(
             { id: user._id },
-            process.env.JWT_SECRET || process.env.SECRET_KEY,
+            process.env.JWT_SECRET || process.env.JWT_SECRET,
             { expiresIn: '10m' }   // as used in the video
         );
 
@@ -207,13 +207,13 @@ export const login = async (req, res) => {
 
         const accessToken = jwt.sign(
             { id: exisitingUser._id },
-            process.env.SECRET_KEY,
+            process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
         const refreshToken = jwt.sign(
             { id: exisitingUser._id },
-            process.env.SECRET_KEY,
+            process.env.JWT_SECRET,
             { expiresIn: '3d' }
         );
 
