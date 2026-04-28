@@ -1,4 +1,4 @@
-name: Build Docker Images
+name: Build & Deploy Docker Images
 
 on:
   push:
@@ -31,3 +31,15 @@ jobs:
 
       - name: Push Frontend
         run: docker push ghcr.io/${{ github.repository }}/frontend
+
+      # 🚀 NEW PART (THIS IS WHAT YOU ARE MISSING)
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/zap
+            docker compose pull
+            docker compose up -d
