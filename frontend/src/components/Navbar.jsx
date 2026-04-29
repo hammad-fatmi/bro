@@ -43,6 +43,7 @@ const Navbar = () => {
 
             <Link to={'/'}><li>Home</li></Link>
             <Link to={'/products'}><li>Products</li></Link>
+            <Link to="/services">Services</Link>
 
             {/* ✅ NEW PAGE ADDED */}
             <Link to={'/dashboard'}>

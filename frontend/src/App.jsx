@@ -11,6 +11,7 @@ import Footer from './components/Footer'
 import Profile from "./pages/Profile";
 import Products from "./pages/Products"
 import Dashboard from "./pages/Dashboard";
+import Services from './pages/Services'
 
 const router = createBrowserRouter([
   {
@@ -46,7 +47,12 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <><Navbar /><Dashboard /><Footer /></>
-  }
+  },
+
+  {
+    path: '/services',
+    element: <><Navbar /><Services /><Footer /></>
+  },
 
 ])
 
