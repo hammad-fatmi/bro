@@ -11,7 +11,7 @@ import Footer from './components/Footer'
 import Profile from "./pages/Profile";
 import Products from "./pages/Products"
 import Dashboard from "./pages/Dashboard";
-import Services from './pages/Services'
+// import Services from './pages/Services'
 
 const router = createBrowserRouter([
   {
