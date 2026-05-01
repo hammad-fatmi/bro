@@ -1,0 +1,37 @@
+name: Lint Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # FRONTEND LINT
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Run Frontend Lint
+        working-directory: ./frontend
+        run: npm run lint
+
+      # BACKEND LINT
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run Backend Lint
+        working-directory: ./backend
+        run: echo "No backend lint configured yet"

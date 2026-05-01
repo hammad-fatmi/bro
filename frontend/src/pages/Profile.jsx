@@ -28,7 +28,7 @@ import { setUser } from "@/redux/userSlice"
 
 const Profile = () => {
 
-    const { user } = //useSelector(store => store.user)
+    const { user } = useSelector(store => store.user)
     const { userId } = useParams()
     const dispatch = useDispatch()
 
