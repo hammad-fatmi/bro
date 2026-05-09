@@ -1,16 +1,15 @@
 services:
   backend:
-  build: ./backend
-  expose:
-    - "3000"
-  env_file:
-    - ./backend/.env
-  frontend:
-    build: ./frontend
+    image: ghcr.io/hammad-fatmi/bro/backend
     expose:
       - "3000"
-    depends_on:
-      - backend
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    image: ghcr.io/hammad-fatmi/bro/frontend
+    ports:
+      - "80:80"
 
   nginx:
     image: nginx:latest
