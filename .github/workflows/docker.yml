@@ -14,26 +14,28 @@ jobs:
       packages: write
 
     steps:
-      - name: Get code  #Just a name could be anything for Human Understanding
-        uses: actions/checkout@v4  #action is just a offical name of GH acion @v4 is a version Checkoutmeans Get the Code form GH Repo 
-                                   #like download the Code form GH Repo in SSH that created by GH
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Login to GitHub Registry   #login name just a name 
+      - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build Backend
-        run: docker build -t ghcr.io/${{ github.repository }}/backend ./backend
+      - name: Set Image Name
+        run: echo "IMAGE=ghcr.io/${{ github.repository }}" >> $GITHUB_ENV
 
-      - name: Build Frontend
-        run: docker build -t ghcr.io/${{ github.repository }}/frontend ./frontend
+      - name: Build Backend Image
+        run: docker build -t $IMAGE/backend ./backend
 
-      - name: Push Backend
-        run: docker push ghcr.io/${{ github.repository }}/backend
+      - name: Build Frontend Image
+        run: docker build -t $IMAGE/frontend ./frontend
 
-      - name: Push Frontend
-        run: docker push ghcr.io/${{ github.repository }}/frontend
+      - name: Push Backend Image
+        run: docker push $IMAGE/backend
 
-      - name: Deploy to EC2
+      - name: Push Frontend Image
+        run: docker push $IMAGE/frontend
+
+      - name: Deploy on EC2 (Pull & Run)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -41,6 +43,16 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ec2-user/bro
+
+            # update repo (optional, for configs only)
             git pull origin main
+
+            # stop old containers
             docker compose down
-            docker compose up -d --build
+
+            # pull latest images from GHCR
+            docker pull ghcr.io/${{ github.repository }}/backend
+            docker pull ghcr.io/${{ github.repository }}/frontend
+
+            # start containers WITHOUT build
+            docker compose up -d
