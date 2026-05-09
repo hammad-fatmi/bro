@@ -14,10 +14,11 @@ jobs:
       packages: write
 
     steps:
-      - name: Get code
-        uses: actions/checkout@v4
+      - name: Get code  #Just a name could be anything for Human Understanding
+        uses: actions/checkout@v4  #action is just a offical name of GH acion @v4 is a version Checkoutmeans Get the Code form GH Repo 
+                                   #like download the Code form GH Repo in SSH that created by GH
 
-      - name: Login to GitHub Registry
+      - name: Login to GitHub Registry   #login name just a name 
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Backend

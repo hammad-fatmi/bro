@@ -1,5 +1,15 @@
 name: Lint Check
+   #is the Code written Correctly
+   #Lint = code quality check
 
+# It checks things like:
+
+# missing semicolons
+# unused variables
+# bad formatting
+# simple mistakes
+
+# 📌 Not runtime errors — just code quality
 on:
   push:
     branches:
@@ -25,7 +35,7 @@ jobs:
 
       - name: Run Frontend Lint
         working-directory: ./frontend
-        run: npm run lint
+        run: npm run lint  #Lint = execute a tool that checks your code quality
 
       # BACKEND LINT
       - name: Install Backend Dependencies

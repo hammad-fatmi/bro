@@ -1,10 +1,15 @@
 name: Run Tests
-
+        #This pipeline will run npm install 
+        #It reads your package.json and tries to download those packages from the online registry.
+        #AND run:npm install build 
+        # to check any syntax error or missing imports 
+        #like import App from './App'  // file doesn't exist 
 on:
   push:
     branches:
       - main
-
+       #RUN means excecut that commmadn on Temporary machine
+       #use means a already build action tool
 jobs:
   test:
     runs-on: ubuntu-latest

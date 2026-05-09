@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import Products from "./pages/Products"
 import Dashboard from "./pages/Dashboard";
 import Services from './pages/Services'
+import Upload from "./pages/Upload";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,11 @@ const router = createBrowserRouter([
   {
     path: '/services',
     element: <><Navbar /><Services /><Footer /></>
+  },
+
+  {
+    path: '/upload',
+    element: <><Navbar /><Upload /><Footer /></>
   },
 
 ])
