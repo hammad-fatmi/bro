@@ -34,7 +34,7 @@ export default function Upload() {
       );
 
       setUploadedUrl(res.data.imageUrl);
-      alert("Upload successful");
+      alert("Upload successful 🚀");
     } catch (err) {
       console.log(err);
       alert("Upload failed");
@@ -42,8 +42,22 @@ export default function Upload() {
   };
 
   return (
-    <div style={{ padding: "40px", fontFamily: "sans-serif" }}>
-      <h2>Upload Image / Video</h2>
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "40px",
+        fontFamily: "sans-serif",
+        background: "linear-gradient(135deg, #1e3c72, #2a5298)",
+        color: "white"
+      }}
+    >
+      <h2 style={{ fontSize: "28px", marginBottom: "10px" }}>
+        📤 Upload Center
+      </h2>
+
+      <p style={{ opacity: 0.8 }}>
+        Drag & drop your image or video and upload to cloud ☁️
+      </p>
 
       {/* DROP AREA */}
       <div
@@ -51,16 +65,18 @@ export default function Upload() {
         onDragOver={(e) => e.preventDefault()}
         onClick={() => document.getElementById("fileInput").click()}
         style={{
-          border: "2px dashed #999",
-          borderRadius: "12px",
-          padding: "50px",
+          border: "2px dashed #ffffff80",
+          borderRadius: "15px",
+          padding: "60px",
           textAlign: "center",
           cursor: "pointer",
-          marginTop: "20px"
+          marginTop: "30px",
+          background: "rgba(255,255,255,0.05)",
+          backdropFilter: "blur(8px)"
         }}
       >
-        <p>Drag & Drop file here</p>
-        <p>or click to select</p>
+        <p style={{ fontSize: "18px" }}>📁 Drag & Drop file here</p>
+        <p style={{ opacity: 0.7 }}>or click to select</p>
 
         <input
           id="fileInput"
@@ -73,11 +89,22 @@ export default function Upload() {
 
       {/* PREVIEW */}
       {preview && (
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ marginTop: "30px" }}>
+          <h3>Preview:</h3>
+
           {file.type.startsWith("image") ? (
-            <img src={preview} width="300" />
+            <img
+              src={preview}
+              width="300"
+              style={{ borderRadius: "12px", marginTop: "10px" }}
+            />
           ) : (
-            <video src={preview} controls width="400" />
+            <video
+              src={preview}
+              controls
+              width="400"
+              style={{ borderRadius: "12px", marginTop: "10px" }}
+            />
           )}
         </div>
       )}
@@ -86,19 +113,32 @@ export default function Upload() {
       <button
         onClick={handleUpload}
         style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          cursor: "pointer"
+          marginTop: "30px",
+          padding: "12px 25px",
+          cursor: "pointer",
+          border: "none",
+          borderRadius: "10px",
+          background: "linear-gradient(90deg, #ff6a00, #ee0979)",
+          color: "white",
+          fontWeight: "bold",
+          fontSize: "16px"
         }}
       >
-        Upload
+        🚀 Upload to S3
       </button>
 
       {/* RESULT */}
       {uploadedUrl && (
-        <div style={{ marginTop: "20px" }}>
-          <a href={uploadedUrl} target="_blank">
-            View Uploaded File
+        <div style={{ marginTop: "30px" }}>
+          <h3>✅ Uploaded Successfully</h3>
+
+          <a
+            href={uploadedUrl}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "#00ffd5" }}
+          >
+            View File
           </a>
         </div>
       )}
