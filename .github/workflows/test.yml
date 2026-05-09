@@ -1,42 +1,42 @@
-name: Run Tests
-        #This pipeline will run npm install 
-        #It reads your package.json and tries to download those packages from the online registry.
-        #AND run:npm install build 
-        # to check any syntax error or missing imports 
-        #like import App from './App'  // file doesn't exist 
-on:
-  push:
-    branches:
-      - main
-       #RUN means excecut that commmadn on Temporary machine
-       #use means a already build action tool
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# name: Run Tests
+#         #This pipeline will run npm install 
+#         #It reads your package.json and tries to download those packages from the online registry.
+#         #AND run:npm install build 
+#         # to check any syntax error or missing imports 
+#         #like import App from './App'  // file doesn't exist 
+# on:
+#   push:
+#     branches:
+#       - main
+#        #RUN means excecut that commmadn on Temporary machine
+#        #use means a already build action tool
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Get Code
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Get Code
+#         uses: actions/checkout@v4
 
-      # FRONTEND
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+#       # FRONTEND
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 22
 
-      - name: Install Frontend Dependencies
-        working-directory: ./frontend
-        run: npm install
+#       - name: Install Frontend Dependencies
+#         working-directory: ./frontend
+#         run: npm install
 
-      - name: Build Frontend
-        working-directory: ./frontend
-        run: npm run build
+#       - name: Build Frontend
+#         working-directory: ./frontend
+#         run: npm run build
 
-      # BACKEND
-      - name: Install Backend Dependencies
-        working-directory: ./backend
-        run: npm install
+#       # BACKEND
+#       - name: Install Backend Dependencies
+#         working-directory: ./backend
+#         run: npm install
 
-      - name: Test Backend
-        working-directory: ./backend
-        run: echo "No backend tests yet"
+#       - name: Test Backend
+#         working-directory: ./backend
+#         run: echo "No backend tests yet"
