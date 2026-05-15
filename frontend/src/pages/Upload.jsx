@@ -75,7 +75,7 @@ export default function Upload() {
           backdropFilter: "blur(8px)"
         }}
       >
-        <p style={{ fontSize: "18px" }}>📁 Drag & Drop file here</p>
+        <p style={{ fontSize: "18px" }}>📁 Drag & Drop file here123</p>
         <p style={{ opacity: 0.7 }}>or click to select</p>
 
         <input
