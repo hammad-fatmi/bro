@@ -1,5 +1,5 @@
 import express from "express";
-import { fetchYoutubeVideos } from "../services/ytFetch.js";
+import { fetchYoutubeVideos } from "../services/ytfetch.js";
 
 const router = express.Router();
 
