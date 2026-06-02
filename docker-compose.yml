@@ -28,4 +28,3 @@ services:
       - frontend_blue
       - frontend_green
       - backend
-➜  bro git:(main) ✗ 

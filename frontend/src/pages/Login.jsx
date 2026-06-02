@@ -41,7 +41,7 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        console.log("Form Data456:", formData);
+        console.log("Form Data:", formData);
 
         try {
             setLoading(true);
