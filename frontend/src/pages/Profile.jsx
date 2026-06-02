@@ -23,7 +23,7 @@ import userLogo from "../assets/userLogo.png"
 import { toast } from 'sonner'
 import axios from 'axios'
 
-// ⚠️ IMPORTANT: import your redux action
+//  IMPORTANT: import your redux action
 import { setUser } from "@/redux/userSlice"
 
 const Profile = () => {

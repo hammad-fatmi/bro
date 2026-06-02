@@ -48,11 +48,11 @@ jobs:
             git pull origin main
 
             # stop old containers
-            docker compose down
+            docker compose pull
 
-            # pull latest images from GHCR
-            docker pull ghcr.io/${{ github.repository }}/backend
-            docker pull ghcr.io/${{ github.repository }}/frontend
+            # Recreate only backend
+            docker composeup -d --no--deps backend
+            
 
-            # start containers WITHOUT build
-            docker compose up -d
+            # Recreate only frontend
+            docker compose up -d --no-deps frontend

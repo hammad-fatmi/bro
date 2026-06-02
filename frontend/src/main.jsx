@@ -6,7 +6,8 @@ import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import store from "./redux/store"; 
 import { persistStore } from "redux-persist";
-import { PersistGate } from "redux-persist/integration/react"; // ✅ ADD THIS
+import { PersistGate } from "redux-persist/integration/react"; //  
+
 
 const persistor = persistStore(store)
 

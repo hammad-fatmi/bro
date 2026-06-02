@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1045.0",
+    "axios": "^1.16.1",
     "bcryptjs": "^3.0.3",
+    "cheerio": "^1.2.0",
     "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
     "datauri": "^4.1.0",
@@ -22,7 +24,10 @@
     "mongodb": "^7.1.0",
     "mongoose": "^9.3.1",
     "multer": "^2.1.1",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^8.0.4",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "open-graph-scraper": "^6.11.0",
+    "rss-parser": "^3.13.0"
   }
 }

@@ -1,44 +1,84 @@
-import express from 'express'
-import 'dotenv/config'
-import connectDB from './database/db.js'
+import express from 'express';
+import 'dotenv/config';
 import dns from 'node:dns/promises';
-import userRoute from './routes/userRoute.js'
-import cors from 'cors'
-import productRoute from './routes/productRoute.js'
-import uploadRoute from "./routes/uploadRoutes.js";
+import cors from 'cors';
+
+import connectDB from './database/db.js';
+
+import userRoute from './routes/userRoute.js';
+import productRoute from './routes/productRoute.js';
+import uploadRoute from './routes/uploadRoutes.js';
+
+import trendingRoutes from './routes/trendingRoutes.js';
+import techMovesRoutes from './routes/techMovesRoutes.js';
+
+import newsRoute from './routes/newsRoute.js';
+import ytRoute from "./routes/ytRoute.js";
+import networkingRoute from "./routes/networkingRoute.js";
 
 
+const app = express();
+
+// Optional DNS fix
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
-const app = express()
+/* =========================
+   MIDDLEWARE
+========================= */
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',   // ✅ ADD THIS
+  'http://devtech2026.duckdns.org'
+];
 app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}))
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
 
-const PORT = process.env.PORT || 3000
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-app.use(express.json())
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
 
-app.use('/api/v1/user', userRoute)
-app.use('/api/v1/product', productRoute)
-app.use("/api/upload", uploadRoute);
+app.use(express.json());
 
+/* =========================
+   ROUTES
+========================= */
 
+app.use('/api/v1/user', userRoute);
+app.use('/api/v1/product', productRoute);
+app.use("/api/news/networking", networkingRoute);
+app.use('/api/upload', uploadRoute);
+app.use('/api/news', newsRoute);
+
+app.use('/api/news/trending', trendingRoutes);
+app.use('/api/news/tech-moves', techMovesRoutes);
+app.use("/api/youtube", ytRoute);
+
+/* =========================
+   SERVER START
+========================= */
+
+const PORT = process.env.PORT || 5000;
 
 async function startServer() {
-    try {
-        await connectDB()          // connect to MongoDB first
-        console.log('✅ Connected to MongoDB!')
+  try {
+    await connectDB();
+    console.log('✅ Connected to MongoDB');
 
-        app.listen(PORT, () => {
-            console.log(`Server is listening at Port: ${PORT}`)
-        })
-    } catch (err) {
-        console.error('MongoDB Connection Failed:', err.message)
-        process.exit(1)           // stop the server if DB fails
-    }
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+
+  } catch (err) {
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1);
+  }
 }
 
-startServer()
+startServer();
