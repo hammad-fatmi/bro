@@ -51,7 +51,7 @@ jobs:
             docker compose pull
 
             # Recreate only backend
-            docker composeup -d --no--deps backend
+            docker compose up -d --no--deps backend
             
 
             # Recreate only frontend
