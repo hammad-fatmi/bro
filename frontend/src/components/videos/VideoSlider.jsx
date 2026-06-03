@@ -11,7 +11,7 @@ const VideoSlider = () => {
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/youtube");
+                const res = await fetch("/api/youtube");
 
                 if (!res.ok) {
                     throw new Error(`HTTP Error ${res.status}`);

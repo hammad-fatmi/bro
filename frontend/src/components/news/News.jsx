@@ -8,7 +8,7 @@ const News = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/news");
+      const response = await axios.get("/api/news");
 
       console.log("API RESPONSE:", response.data);
 

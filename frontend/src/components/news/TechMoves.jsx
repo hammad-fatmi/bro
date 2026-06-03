@@ -9,7 +9,7 @@ const TechMoves = () => {
   const fetchMoves = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/news/tech-moves"
+        "/api/news/tech-moves"
       );
 
       setNews(response.data.data);

@@ -20,7 +20,7 @@ const Article = () => {
         const loadPreview = async (articleData) => {
             try {
                 const previewRes = await axios.get(
-                    "http://localhost:5000/api/news/preview",
+                    "/api/news/preview",
                     {
                         params: {
                             url: articleData.url,
@@ -48,7 +48,7 @@ const Article = () => {
                 setLoading(true);
 
                 const res = await axios.get(
-                    "http://localhost:5000/api/news"
+                    "/api/news"
                 );
 
                 const news = res.data?.data || [];

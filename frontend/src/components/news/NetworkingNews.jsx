@@ -4,7 +4,7 @@ const NetworkingNews = () => {
     const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/news/networking")
+        fetch("/api/news/networking")
             .then(res => res.json())
             .then(data => setArticles(data.data || []))
             .catch(console.error);
