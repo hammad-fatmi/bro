@@ -65,7 +65,7 @@ const Login = () => {
 
         } catch (error) {
             console.log(error);
-            console.log("RESPONSE DATA:", error.response?.data);
+            console.log("RESPONSE DATA hahhahahahahahh:", error.response?.data);
             toast.error(error?.response?.data?.message || "Something went wrong");
         } finally {
             setLoading(false);
