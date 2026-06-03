@@ -35,7 +35,7 @@ jobs:
       - name: Push Frontend Image
         run: docker push $IMAGE/frontend
 
-      - name: Deploy on EC2 (Pull & Run)
+      - name: Blue/Green Deploy (Zero Downtime)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -44,8 +44,36 @@ jobs:
           script: |
             cd /home/ec2-user/bro
 
-            docker compose pull
+            ACTIVE=$(cat nginx/active_env 2>/dev/null || echo green)
 
-            docker compose up -d --no-deps backend
+            echo "Current ACTIVE: $ACTIVE"
 
-            docker compose up -d --no-deps frontend_green
+            if [ "$ACTIVE" = "green" ]; then
+
+              echo "Deploying BLUE..."
+
+              docker compose up -d --no-deps frontend_blue
+              docker compose up -d --no-deps backend
+
+              sleep 10
+
+              rm -f nginx/active_green
+              touch nginx/active_blue
+              echo "blue" > nginx/active_env
+
+            else
+
+              echo "Deploying GREEN..."
+
+              docker compose up -d --no-deps frontend_green
+              docker compose up -d --no-deps backend
+
+              sleep 10
+
+              rm -f nginx/active_blue
+              touch nginx/active_env
+              echo "green" > nginx/active_env
+
+            fi
+
+            docker exec bro-nginx-1 nginx -s reload
