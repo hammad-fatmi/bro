@@ -12,18 +12,26 @@ const VideoSlider = () => {
         const fetchVideos = async () => {
             try {
                 const res = await fetch("/api/youtube");
-
                 if (!res.ok) {
                     throw new Error(`HTTP Error ${res.status}`);
                 }
+                const text = await res.text();
+                console.log("RAW RESPONSE:", text);
+                //33333333333333333333333333333333333333333333333333333
+                //const data = await res.json();
+                const response = JSON.parse(text);
 
-                const data = await res.json();
-                console.log("YOUTUBE RESPONSE:", data);
-                const filteredVideos = (data?.data || []).filter(
+                console.log("YOUTUBE RESPONSE:", response);
+
+                const videos = response.data || [];
+
+                const filteredVideos = videos.filter(
                     (video) =>
                         !video.title?.toLowerCase().includes("#shorts") &&
                         !video.title?.toLowerCase().includes("shorts")
                 );
+
+
                 console.log("VIDEOS RECEIVED:");
                 filteredVideos.forEach((v, i) => {
                     console.log(i, v.videoId, v.title);

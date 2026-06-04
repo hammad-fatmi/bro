@@ -1,139 +1,133 @@
 import axios from "axios";
 import "dotenv/config";
 
-export async function fetchYoutubeVideos(country = "US") {
+// ------------------------------
+// APPROVED CHANNEL IDS
+// ------------------------------
+const allowedChannelIds = [
+    "UCdngmbVKX1g2IY1X7v6Q4Qw",
+    "UCfq3gq4Y8z3oV9xkZ0Q2m6A",
+    "UCJbPGzawDH1njbqV-D5HqKw",
+    "UCsBjURrPoezykLs9EqgamOA",
+    "UC8p19gUXJYTsUPEpusHgteQ",
+    "UC4Wc0wZ9t4p3m0yXlqF0q6g"
+];
+
+// ------------------------------
+// GET UPLOADS PLAYLIST ID
+// ------------------------------
+async function getUploadsPlaylist(channelId) {
     try {
         const res = await axios.get(
-            "https://www.googleapis.com/youtube/v3/search",
+            "https://www.googleapis.com/youtube/v3/channels",
             {
                 params: {
                     key: process.env.YOUTUBE_API_KEY,
-                    part: "snippet",
-
-                    q: "technology news AI cybersecurity cloud devops software IT industry tech updates",
-
-                    type: "video",
-                    order: "date",
-                    maxResults: 30,
-
-                    regionCode: country || "US",
-                    relevanceLanguage: "en",
-                    safeSearch: "strict",
-                },
+                    part: "contentDetails",
+                    id: channelId
+                }
             }
         );
 
-        if (!res.data?.items) return [];
+        const playlistId =
+            res.data?.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
 
-        let videos = res.data.items.map((item) => ({
-            videoId: item.id.videoId,
-            title: item.snippet.title,
-            channel: item.snippet.channelTitle,
-            thumbnail:
-                item.snippet.thumbnails?.high?.url ||
-                item.snippet.thumbnails?.medium?.url ||
-                item.snippet.thumbnails?.default?.url,
-            publishedAt: item.snippet.publishedAt,
-            youtubeUrl: `https://www.youtube.com/watch?v=${item.id.videoId}`,
-        }));
+        if (!playlistId) {
+            console.log("❌ No playlist for channel:", channelId);
+        }
 
-        // --------------------------------------------------
-        // 🚫 YOUR BANNED CHANNELS (KEPT EXACT + IMPROVED MATCHING)
-        // --------------------------------------------------
-        const bannedChannels = [
-            "apna college",
-            "codewithharry",
-            "freecodecamp hindi",
-            "telusko india",
-            "wscube tech",
-            "great learning",
-            "edureka hindi",
-            "simplilearn hindi",
-            "technical suneja",
-            "frontlinesmedia",
-            "news@it",
-            "tech with jatin"
-        ];
+        return playlistId;
 
-        // --------------------------------------------------
-        // ✅ VERIFIED TECH CHANNELS (NEW STRONG FILTER)
-        // ONLY HIGH QUALITY GLOBAL TECH SOURCES
-        // --------------------------------------------------
-        const allowedChannels = [
-            "techcrunch",
-            "the verge",
-            "wired",
-            "mit technology review",
-            "cnet",
-            "bbc news",
-            "cnn",
-            "engadget",
-            "fireship",
-            "google developers",
-            "microsoft developer",
-            "amazon web services",
-            "aws",
-            "nvidia",
-            "openai"
-        ];
+    } catch (err) {
+        console.log("❌ Channel API failed for:", channelId);
+        console.log("DETAIL:", err.response?.data || err.message);
+        return null;
+    }
+}
 
-        // --------------------------------------------------
-        // 🚫 INDIA CONTENT BLOCK
-        // --------------------------------------------------
-        const indiaKeywords = [
-            "india",
-            "indian",
-            "hindi",
-            "bharat",
-            "bollywood",
-            "delhi",
-            "mumbai",
-            "bangalore",
-            "hyderabad",
-            "chennai",
-            "pune",
-            "kolkata",
-            "tamil",
-            "telugu",
-            "urdu",
-            "iit",
-            "nit"
-        ];
+// ------------------------------
+// MAIN FUNCTION
+// ------------------------------
+export async function fetchYoutubeVideos(country = "US") {
+    try {
+        let allVideos = [];
 
-        // --------------------------------------------------
-        // 🔥 STRONG FILTER ENGINE
-        // --------------------------------------------------
-        videos = videos.filter((v) => {
-            const text = `${v.title} ${v.channel}`.toLowerCase();
-            const channel = v.channel.toLowerCase();
+        console.log("🚀 Starting YouTube fetch...");
+        console.log("Total channels:", allowedChannelIds.length);
 
-            const isBanned = bannedChannels.some((b) =>
-                channel.includes(b.toLowerCase())
+        for (const channelId of allowedChannelIds) {
+
+            console.log("\n---------------------------");
+            console.log("🔹 Processing channel:", channelId);
+
+            const playlistId = await getUploadsPlaylist(channelId);
+
+            console.log("📦 Playlist ID:", playlistId);
+
+            if (!playlistId) continue;
+
+            const res = await axios.get(
+                "https://www.googleapis.com/youtube/v3/playlistItems",
+                {
+                    params: {
+                        key: process.env.YOUTUBE_API_KEY,
+                        part: "snippet",
+                        playlistId,
+                        maxResults: 5
+                    }
+                }
             );
 
-            const isIndia = indiaKeywords.some((k) =>
-                text.includes(k)
-            );
+            console.log("📊 Items received:", res.data?.items?.length || 0);
 
-            // If whitelist matches → always allow (override)
-            const isAllowed = allowedChannels.some((a) =>
-                channel.includes(a.toLowerCase())
-            );
+            // ❗ IMPORTANT DEBUG: show raw API response issues
+            if (!res.data?.items?.length) {
+                console.log("⚠️ Empty response for playlist:", playlistId);
+                console.log("RAW RESPONSE:", res.data);
+                continue;
+            }
 
-            return !isBanned && !isIndia && (isAllowed || true);
+            const videos = res.data.items.map((item) => ({
+                videoId: item.snippet?.resourceId?.videoId,
+                title: item.snippet?.title,
+                channel: item.snippet?.videoOwnerChannelTitle,
+                thumbnail:
+                    item.snippet?.thumbnails?.high?.url ||
+                    item.snippet?.thumbnails?.medium?.url ||
+                    item.snippet?.thumbnails?.default?.url,
+                publishedAt: item.snippet?.publishedAt,
+                youtubeUrl: item.snippet?.resourceId?.videoId
+                    ? `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
+                    : null
+            }));
+
+            allVideos.push(...videos);
+        }
+
+        console.log("\n===========================");
+        console.log("TOTAL RAW VIDEOS:", allVideos.length);
+
+        const cleaned = allVideos.filter((v) => {
+            const valid = v.videoId && v.title && v.thumbnail;
+
+            if (!valid) {
+                console.log("❌ Filter removed video:", v);
+            }
+
+            return valid;
         });
 
-        // --------------------------------------------------
-        // 🧹 FINAL CLEANUP
-        // --------------------------------------------------
-        videos = videos.filter(
-            (v) => v.videoId && v.thumbnail && v.title
+        cleaned.sort(
+            (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
         );
 
-        return videos.slice(0, 15);
+        console.log("FINAL VIDEOS SENT:", cleaned.length);
+
+        return cleaned.slice(0, 15);
 
     } catch (error) {
-        console.error("YouTube API Error:", error.message);
+        console.log("🔥 GLOBAL ERROR:");
+        console.log(error.response?.data || error.message);
         return [];
     }
 }
