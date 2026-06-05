@@ -17,6 +17,7 @@ import NewsCard from "./components/news/NewsCard"
 import Trending from "./components/news/Trending"
 import TechMoves from "./components/news/TechMoves"
 import Article from "./pages/Article";
+import ArticleView from "./components/news/ArticleView";
 
 // Layout wrapper
 const AppLayout = () => {
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
       { path: '/upload', element: <Upload /> },
       { path: '/Profile/:userId', element: <Profile /> },
       { path: "/article/:id", element: <Article /> },
+      { path: "/article-view", element: <ArticleView /> }
      
 
     ]

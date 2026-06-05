@@ -58,6 +58,8 @@ router.get("/", async (req, res) => {
             const searchableText = `
                 ${article.title || ""}
                 ${article.description || ""}
+                ${article.contentSnippet || ""}
+                ${article.content || ""}
                 ${article.category || ""}
             `.toLowerCase();
 
@@ -70,10 +72,42 @@ router.get("/", async (req, res) => {
             `🌐 Networking articles found: ${filtered.length}`
         );
 
-        const sorted = filtered.sort(
+        const normalized = filtered.map((article) => ({
+            title: article.title || "Untitled",
+
+            url:
+                article.url ||
+                article.link ||
+                "#",
+
+            source:
+                article.source ||
+                article.domain ||
+                "Unknown",
+
+            description:
+                article.description ||
+                article.contentSnippet ||
+                article.content ||
+                "No description available.",
+
+            image:
+                article.image ||
+                article.thumbnail ||
+                article.urlToImage ||
+                null,
+
+            createdAt:
+                article.createdAt ||
+                article.isoDate ||
+                article.pubDate ||
+                new Date().toISOString(),
+        }));
+
+        const sorted = normalized.sort(
             (a, b) =>
-                new Date(b.createdAt || 0) -
-                new Date(a.createdAt || 0)
+                new Date(b.createdAt) -
+                new Date(a.createdAt)
         );
 
         return res.json({

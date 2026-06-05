@@ -101,15 +101,41 @@ const VideoSlider = () => {
                         exit={{ opacity: 0, y: -15 }}
                         transition={{ duration: 0.4 }}
                         onClick={() => setSelectedVideo(current)}
-                        className="w-full bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 shadow-xl cursor-pointer hover:border-cyan-500/30 transition"
+                        className="w-full bg-zinc-900/80 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 shadow-2xl cursor-pointer transition duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)]"
                     >
                         {/* THUMBNAIL */}
-                        <div className="aspect-video bg-black">
+                        {/* THUMBNAIL */}
+                        <div className="relative aspect-video overflow-hidden bg-black group">
+
                             <img
                                 src={current.thumbnail}
                                 alt={current.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                             />
+
+                            {/* Dark Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+
+                            {/* Cyan Shine */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent" />
+
+                            {/* Play Button */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm border border-cyan-400/30 flex items-center justify-center shadow-[0_0_30px_rgba(34,211,238,0.35)]">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        className="w-8 h-8 text-cyan-300 ml-1"
+                                    >
+                                        <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Bottom Glow */}
+                            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-cyan-500/10 to-transparent" />
+
                         </div>
 
                         {/* CONTENT */}

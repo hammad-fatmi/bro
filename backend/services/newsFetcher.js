@@ -8,27 +8,29 @@ const parser = new Parser();
 // OG IMAGE SCRAPER
 // =========================
 const ogCache = new Map();
+
 const getCachedOGImage = async (url) => {
     try {
         if (!url) return null;
 
-        // 1. return cached instantly
-        if (ogCache.has(url)) return ogCache.get(url);
+        if (ogCache.has(url)) {
+            return ogCache.get(url);
+        }
 
-        // 2. fetch OG once
         const img = await getOGImage(url);
 
-        // 3. store in memory
         ogCache.set(url, img);
 
         return img;
-
     } catch (err) {
         return null;
     }
 };
+
 const getOGImage = async (url) => {
-    if (ogCache.has(url)) return ogCache.get(url);
+    if (ogCache.has(url)) {
+        return ogCache.get(url);
+    }
 
     try {
         const { result } = await ogs({ url });
@@ -39,8 +41,8 @@ const getOGImage = async (url) => {
             null;
 
         ogCache.set(url, img);
-        return img;
 
+        return img;
     } catch (err) {
         ogCache.set(url, null);
         return null;
@@ -53,7 +55,9 @@ const getOGImage = async (url) => {
 async function fetchNews() {
     try {
 
-
+        // =========================
+        // Hacker News
+        // =========================
         const fetchHN = async () => {
             try {
                 const response = await fetch(
@@ -66,11 +70,18 @@ async function fetchNews() {
                     data.hits
                         .filter(item => item.url && item.title)
                         .slice(0, 50)
-                        .map(async item => ({
+                        .map(async (item) => ({
                             title: item.title,
                             url: item.url,
-                            source: new URL(item.url || item.link).hostname.replace("www.", ""),
+                            source: new URL(item.url).hostname.replace("www.", ""),
+
                             createdAt: item.created_at,
+
+                            description:
+                                item.story_text ||
+                                item.comment_text ||
+                                "",
+
                             image:
                                 item.enclosure?.url ||
                                 await getCachedOGImage(item.url) ||
@@ -83,27 +94,36 @@ async function fetchNews() {
                 return articles;
 
             } catch (err) {
-                console.error('Hacker News error:', err.message);
+                console.error("Hacker News error:", err.message);
                 return [];
             }
         };
 
         // =========================
-        // 2.
+        // Dev.to
         // =========================
         const fetchDevTo = async () => {
             try {
-                const feed = await parser.parseURL('https://dev.to/feed');
+                const feed = await parser.parseURL(
+                    "https://dev.to/feed"
+                );
 
                 const articles = await Promise.all(
                     feed.items
                         .filter(item => item.link && item.title)
                         .slice(0, 50)
-                        .map(async item => ({
+                        .map(async (item) => ({
                             title: item.title,
                             url: item.link,
                             source: new URL(item.link).hostname.replace("www.", ""),
+
                             createdAt: item.pubDate,
+
+                            description:
+                                item.contentSnippet ||
+                                item.content ||
+                                "",
+
                             image:
                                 item.enclosure?.url ||
                                 await getOGImage(item.link)
@@ -115,28 +135,39 @@ async function fetchNews() {
                 return articles;
 
             } catch (err) {
-                console.error('Dev.to error:', err.message);
+                console.error("Dev.to error:", err.message);
                 return [];
             }
         };
 
         // =========================
-        // 3. TechCrunch
+        // TechCrunch
         // =========================
         const fetchTechCrunch = async () => {
             try {
-                const feed = await parser.parseURL('https://techcrunch.com/feed/');
+                const feed = await parser.parseURL(
+                    "https://techcrunch.com/feed/"
+                );
+
                 console.log("TechCrunch Sample:");
                 console.log(feed.items[0]);
+
                 const articles = await Promise.all(
                     feed.items
                         .filter(item => item.link && item.title)
                         .slice(0, 50)
-                        .map(async item => ({
+                        .map(async (item) => ({
                             title: item.title,
                             url: item.link,
                             source: new URL(item.link).hostname.replace("www.", ""),
+
                             createdAt: item.pubDate,
+
+                            description:
+                                item.contentSnippet ||
+                                item.content ||
+                                "",
+
                             image:
                                 item.enclosure?.url ||
                                 await getOGImage(item.link)
@@ -148,7 +179,7 @@ async function fetchNews() {
                 return articles;
 
             } catch (err) {
-                console.error('TechCrunch error:', err.message);
+                console.error("TechCrunch error:", err.message);
                 return [];
             }
         };
@@ -163,18 +194,19 @@ async function fetchNews() {
         ]);
 
         const rawNews = results
-            .filter(r => r.status === 'fulfilled')
+            .filter(r => r.status === "fulfilled")
             .map(r => r.value)
             .flat();
 
         console.log("TOTAL RAW NEWS:", rawNews.length);
+
         console.log("FIRST ARTICLE:");
         console.log(rawNews[0]);
 
         return rawNews;
 
     } catch (error) {
-        console.error('Global fetch error:', error);
+        console.error("Global fetch error:", error);
         return [];
     }
 }

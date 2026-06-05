@@ -40,7 +40,6 @@ export default async function processNews(newsList) {
     const enriched = filtered.map((item) => {
         const dateObj = new Date(item.createdAt);
 
-        // Stable article ID
         const id = crypto
             .createHash("md5")
             .update(item.url)
@@ -51,9 +50,17 @@ export default async function processNews(newsList) {
             title: item.title || "No title",
             url: item.url,
             source: item.source || "Unknown",
+
             category: categorizeNews(item.title),
 
             image: item.image || null,
+
+            description:
+                item.description ||
+                item.contentSnippet ||
+                item.content ||
+                "",
+
             video: null,
 
             time: dateObj.toLocaleString(),
@@ -64,6 +71,10 @@ export default async function processNews(newsList) {
     const sorted = enriched.sort(
         (a, b) => b.timestamp - a.timestamp
     );
+
+    // Debug first article
+    console.log("FIRST PROCESSED ARTICLE:");
+    console.log(sorted[0]);
 
     return sorted.map(({ timestamp, ...rest }) => rest);
 }
