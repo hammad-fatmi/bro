@@ -56,7 +56,7 @@ jobs:
           script: |
             cd /home/ec2-user/bro
 
-            echo "Pulling latest :gh images..."
+            echo "Pulling latest GHCR images..."
 
             docker compose pull
 
@@ -68,8 +68,8 @@ jobs:
 
               echo "Deploying BLUE..."
 
-              docker compose up -d --no-deps frontend_blue
-              docker compose up -d --no-deps backend
+              docker compose up -d --no-deps --force-recreate frontend_blue
+              docker compose up -d --no-deps --force-recreate backend
 
               sleep 10
 
@@ -79,8 +79,8 @@ jobs:
 
               echo "Deploying GREEN..."
 
-              docker compose up -d --no-deps frontend_green
-              docker compose up -d --no-deps backend
+              docker compose up -d --no-deps --force-recreate frontend_green
+              docker compose up -d --no-deps --force-recreate backend
 
               sleep 10
 
@@ -89,3 +89,6 @@ jobs:
             fi
 
             docker exec bro-nginx-1 nginx -s reload
+
+            echo "Running containers:"
+            docker ps

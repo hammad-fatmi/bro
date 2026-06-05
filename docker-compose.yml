@@ -1,25 +1,30 @@
 services:
   frontend_blue:
-    image: ghcr.io/hammad-fatmi/bro/frontend
+    image: ghcr.io/hammad-fatmi/bro/frontend:gh
     container_name: frontend_blue
     expose:
       - "3000"
+    restart: unless-stopped
 
   frontend_green:
-    image: ghcr.io/hammad-fatmi/bro/frontend
+    image: ghcr.io/hammad-fatmi/bro/frontend:gh
     container_name: frontend_green
     expose:
       - "3000"
+    restart: unless-stopped
 
   backend:
-    image: ghcr.io/hammad-fatmi/bro/backend
+    image: ghcr.io/hammad-fatmi/bro/backend:gh
+    container_name: bro-backend-1
     expose:
       - "5000"
     env_file:
       - ./backend/.env
+    restart: unless-stopped
 
   nginx:
     image: nginx:latest
+    container_name: bro-nginx-1
     ports:
       - "80:80"
     volumes:
@@ -28,3 +33,4 @@ services:
       - frontend_blue
       - frontend_green
       - backend
+    restart: unless-stopped
