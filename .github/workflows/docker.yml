@@ -73,6 +73,8 @@ jobs:
 
               sleep 10
 
+              sed -i 's/frontend_green:3000/frontend_blue:3000/' nginx/default.conf
+
               echo "blue" > nginx/active_env
 
             else
@@ -84,11 +86,13 @@ jobs:
 
               sleep 10
 
+              sed -i 's/frontend_blue:3000/frontend_green:3000/' nginx/default.conf
+
               echo "green" > nginx/active_env
 
             fi
 
             docker exec bro-nginx-1 nginx -s reload
 
-            echo "Running containers:"
-            docker ps
+            echo "Current upstream:"
+            grep "server frontend_" nginx/default.conf
