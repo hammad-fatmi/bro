@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,9 @@ import { toast } from "react-toastify";
 import { setUser } from "@/redux/userSlice";
 import { Menu } from "lucide-react";
 
+
 const Navbar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const Navbar = () => {
     <header className="fixed top-5 left-0 w-full z-50 px-4 md:px-8">
       {/* MAIN ULTRA-GLASS CAPSULE */}
       <div className="max-w-7xl mx-auto bg-neutral-950/25 backdrop-blur-2xl border border-white/[0.12] rounded-full px-6 h-16 flex justify-between items-center relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.15)]">
-        
+
         {/* SPECULAR TOP-EDGE GLASS REFLECTION */}
         <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
 
@@ -65,10 +67,10 @@ const Navbar = () => {
                 >
                   {/* TUNED: RESTED GLOW SITS AT 23% OPACITY, GENTLY RISES TO ONLY 55% ON HOVER */}
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 via-fuchsia-500 to-purple-800 rounded-full blur-md opacity-20 group-hover:opacity-10 scale-100 group-hover:scale-105 transition-all duration-300 ease-out" />
-                  
+
                   {/* Frosted Glass Floating Lens Overlap */}
                   <div className="absolute inset-0 bg-white/[0.04] backdrop-blur-md border border-white/[0.15] rounded-full opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_20px_rgba(0,0,0,0.4)]" />
-                  
+
                   {/* Subtle Laser Dot Indicator */}
                   <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-purple-400 to-fuchsia-400 rounded-full opacity-0 transition-all duration-300 group-hover:w-1/4 shadow-[0_0_8px_rgba(240,70,239,0.6)]" />
 
@@ -105,7 +107,7 @@ const Navbar = () => {
             <div className="relative group">
               {/* Login Backing Aura */}
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 via-fuchsia-500 to-purple-800 rounded-full blur-md opacity-40 group-hover:opacity-85 transition duration-300" />
-              
+
               {/* Login Button */}
               <Button
                 onClick={() => navigate("/login")}
@@ -117,12 +119,33 @@ const Navbar = () => {
           )}
 
           {/* MOBILE HAMBURGER BUTTON */}
-          <button className="p-2 rounded-full md:hidden border border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.08] transition-all duration-200 group">
-            <Menu className="text-zinc-400 group-hover:text-white w-5 h-5 transition-transform active:scale-90" />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 rounded-full md:hidden border border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.08] transition-all duration-200 group"
+          >
+            <Menu className="text-zinc-400 group-hover:text-white w-5 h-5" />
           </button>
         </div>
 
       </div>
+      {mobileOpen && (
+        <div className="md:hidden absolute top-20 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-white/10 p-5 flex flex-col gap-4">
+          {["/", "/news", "/trending", "/tech-moves", "/upload"].map((path, i) => {
+            const labels = ["Home", "News", "Trending", "Tech Moves", "Upload"];
+
+            return (
+              <Link
+                key={path}
+                to={path}
+                onClick={() => setMobileOpen(false)}
+                className="text-white text-sm py-2 border-b border-white/10"
+              >
+                {labels[i]}
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 };
