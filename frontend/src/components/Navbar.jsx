@@ -57,7 +57,7 @@ const Navbar = () => {
         <nav className="hidden md:flex gap-1.5 items-center">
           {["/", "/news", "/trending", "/tech-moves", "/upload"].map(
             (path, i) => {
-              const labels = ["Home", "News Feed", "Trending", "Tech Moves", "Upload"];
+              const labels = ["Home", "News Feed", "Trending", "Tech Moves", ""];
 
               return (
                 <Link

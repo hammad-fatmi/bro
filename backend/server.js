@@ -29,7 +29,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',   // ✅ ADD THIS
-  'http://devtech2026.duckdns.org'
+  'http://codefeed.duckdns.org'
 ];
 app.use(cors({
   origin: function (origin, callback) {

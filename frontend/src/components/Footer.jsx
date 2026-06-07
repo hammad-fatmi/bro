@@ -41,7 +41,7 @@ const Footer = () => {
                 { to: "/news", label: "News" },
                 { to: "/trending", label: "Trending" },
                 { to: "/tech-moves", label: "Tech Moves" },
-                { to: "/upload", label: "Upload" },
+                { to: "/upload", label: "" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
