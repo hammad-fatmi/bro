@@ -3,3 +3,4 @@ node_modules
 dist
 build
 k8s/
+backend/.env
