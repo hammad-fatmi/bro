@@ -8,7 +8,7 @@ const Features = () => {
                 {/* headline */}
                 <div className="mb-8">
                     <h2 className="text-2xl md:text-3xl font-bold">
-                        Why people use <span className="text-cyan-400">CodeFeed News</span>
+                        Why people use <span className="text-cyan-400">ByteForge News</span>
                     </h2>
                     <p className="text-white/60 mt-2">
                         Real-time tech intelligence from global sources

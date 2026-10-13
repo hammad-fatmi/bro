@@ -7,7 +7,6 @@ import connectDB from './database/db.js';
 
 import userRoute from './routes/userRoute.js';
 import productRoute from './routes/productRoute.js';
-import uploadRoute from './routes/uploadRoutes.js';
 
 import trendingRoutes from './routes/trendingRoutes.js';
 import techMovesRoutes from './routes/techMovesRoutes.js';
@@ -29,7 +28,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',   // 
-  'http://codefeed.duckdns.org'
+  'http://ByteForge.duckdns.org'
 ];
 app.use(cors({
   origin: function (origin, callback) {
@@ -53,7 +52,6 @@ app.use(express.json());
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/product', productRoute);
 app.use("/api/news/networking", networkingRoute);
-app.use('/api/upload', uploadRoute);
 app.use('/api/news', newsRoute);
 
 app.use('/api/news/trending', trendingRoutes);

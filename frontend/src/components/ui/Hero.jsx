@@ -69,40 +69,29 @@ const Hero = () => {
               transition={{ duration: 0.6 }}
               className="relative h-[420px]"
             >
-              <motion.div
-                key={current.url}
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6 }}
-                className="relative h-[420px]"
-              >
-                <img
-                  src={current.image}
-                  alt={current.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                />
+              <img
+                src={current.image}
+                alt=""
+                aria-hidden="true"
+                referrerPolicy="no-referrer"
+                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-2xl"
+              />
+              <img
+                src={current.image}
+                alt={current.title}
+                referrerPolicy="no-referrer"
+                className="relative h-full w-full object-contain pb-24"
+                onError={() =>
+                  setNews((prev) => prev.filter((n) => n.url !== current.url))
+                }
+              />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-                <div className="absolute bottom-0 p-6">
-                  <span className="text-xs px-3 py-1 bg-cyan-500/20 border border-cyan-400/30 rounded-full">
-                    {current.source}
-                  </span>
-
-                  <h1 className="text-2xl md:text-3xl font-bold mt-3">
-                    {current.title}
-                  </h1>
-                </div>
-              </motion.div>
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/60 to-transparent" />
 
               <div className="absolute bottom-0 p-6">
                 <span className="text-xs px-3 py-1 bg-cyan-500/20 border border-cyan-400/30 rounded-full">
                   {current.source}
                 </span>
-
                 <h1 className="text-2xl md:text-3xl font-bold mt-3">
                   {current.title}
                 </h1>
@@ -117,8 +106,8 @@ const Hero = () => {
         <div className="md:col-span-2 flex flex-col gap-4">
 
           {news
-            .filter((item) => item.image && item.image.trim() !== "")
-            .slice(1, 4)
+            .filter((item) => item.url !== current.url)
+            .slice(0, 3)
             .map((item) => (
               <motion.a
                 key={item.url}

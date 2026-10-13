@@ -26,7 +26,7 @@ const NewsCard = ({ article }) => {
         </div>
 
         {/* MEDIA SECTION */}
-        <div className="relative h-56 overflow-hidden">
+        <div className="relative h-56 overflow-hidden bg-black">
           {hasVideo ? (
             <video
               src={article.video}
@@ -36,20 +36,46 @@ const NewsCard = ({ article }) => {
               loop
               playsInline
             />
+          ) : hasImage ? (
+            <>
+              <img
+                src={article.image}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-2xl"
+              />
+              <motion.img
+                src={article.image}
+                alt={article.title}
+                className="relative h-full w-full object-contain"
+                whileHover={{ scale: 1.04 }}
+                transition={{ duration: 0.5 }}
+                onError={(e) => {
+                  e.target.src = DEFAULT_IMAGE;
+                }}
+              />
+            </>
           ) : (
-            <motion.img
-              src={hasImage ? article.image : DEFAULT_IMAGE}
-              alt={article.title}
-              className="h-full w-full object-cover"
-              whileHover={{ scale: 1.08 }}
-              transition={{ duration: 0.5 }}
-              onError={(e) => {
-                e.target.src = DEFAULT_IMAGE;
+            <div
+              className="flex h-full w-full items-center justify-center"
+              style={{
+                background: (() => {
+                  const hue =
+                    [...(article.title || "")].reduce(
+                      (h, c) => h + c.charCodeAt(0),
+                      0
+                    ) % 360;
+                  return `linear-gradient(135deg, hsl(${hue} 70% 28%), hsl(${(hue + 60) % 360} 70% 12%))`;
+                })(),
               }}
-            />
+            >
+              <span className="text-6xl font-bold text-white/80">
+                {(article.source || "?")[0].toUpperCase()}
+              </span>
+            </div>
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent" />
 
           <div className="absolute left-4 top-4 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-300 backdrop-blur-md">
             {article.badge || "TRENDING"}

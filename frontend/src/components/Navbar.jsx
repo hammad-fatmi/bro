@@ -46,7 +46,7 @@ const Navbar = () => {
           className="relative group flex flex-col justify-center active:scale-95 transition"
         >
           <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-purple-600 bg-clip-text text-xl font-black tracking-wider text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:brightness-110 transition duration-300">
-            CodeFeed
+            ByteForge
           </span>
           <span className="text-[9px] text-fuchsia-400/70 tracking-[0.3em] font-bold mt-[-2px] pl-0.5">
             NEWS
@@ -57,7 +57,7 @@ const Navbar = () => {
         <nav className="hidden md:flex gap-1.5 items-center">
           {["/", "/news", "/trending", "/tech-moves", "/upload"].map(
             (path, i) => {
-              const labels = ["Home", "News Feed", "Trending", "Tech Moves", ""];
+              const labels = ["Home", "News Feed", "Tech Insights", "Industry Watch", ""];
 
               return (
                 <Link

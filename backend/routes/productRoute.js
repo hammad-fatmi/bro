@@ -1,13 +1,10 @@
 import express from 'express'
-import { addProduct, getAllProduct, deleteProduct, updateProduct } from '../controller/productController.js'
 import { isAdmin, isAuthenticated } from '../middleware/isAuthenticated.js'
 import { multipleUpload } from '../middleware/multer.js'
 
 const router = express.Router()
 
-router.post('/add', isAuthenticated, isAdmin, multipleUpload, addProduct)
-router.get('/getallProducts', getAllProduct)
-router.delete('/delete/:productId', isAuthenticated, isAdmin, deleteProduct)
-router.put("/update/:productId", isAuthenticated, isAdmin, multipleUpload, updateProduct)
+router.post('/add', isAuthenticated, isAdmin, multipleUpload)
+router.put("/update/:productId", isAuthenticated, isAdmin)
 
 export default router            

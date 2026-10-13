@@ -48,22 +48,21 @@ async function getUploadsPlaylist(channelId) {
 // ------------------------------
 // MAIN FUNCTION
 // ------------------------------
+
+const pickThumbnail = (thumbs = {}, videoId) =>
+    thumbs.maxres?.url ||
+    thumbs.standard?.url ||
+    thumbs.high?.url ||
+    thumbs.medium?.url ||
+    thumbs.default?.url ||
+    (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : null);
+
 export async function fetchYoutubeVideos(country = "US") {
     try {
-        let allVideos = [];
-
-        console.log("🚀 Starting YouTube fetch...");
-        console.log("Total channels:", allowedChannelIds.length);
+        const allVideos = [];
 
         for (const channelId of allowedChannelIds) {
-
-            console.log("\n---------------------------");
-            console.log("🔹 Processing channel:", channelId);
-
             const playlistId = await getUploadsPlaylist(channelId);
-
-            console.log("📦 Playlist ID:", playlistId);
-
             if (!playlistId) continue;
 
             const res = await axios.get(
@@ -78,56 +77,40 @@ export async function fetchYoutubeVideos(country = "US") {
                 }
             );
 
-            console.log("📊 Items received:", res.data?.items?.length || 0);
+            if (!res.data?.items?.length) continue;
 
-            // ❗ IMPORTANT DEBUG: show raw API response issues
-            if (!res.data?.items?.length) {
-                console.log("⚠️ Empty response for playlist:", playlistId);
-                console.log("RAW RESPONSE:", res.data);
-                continue;
-            }
+            const videos = res.data.items.map((item) => {
+                const videoId = item.snippet?.resourceId?.videoId;
 
-            const videos = res.data.items.map((item) => ({
-                videoId: item.snippet?.resourceId?.videoId,
-                title: item.snippet?.title,
-                channel: item.snippet?.videoOwnerChannelTitle,
-                thumbnail:
-                    item.snippet?.thumbnails?.high?.url ||
-                    item.snippet?.thumbnails?.medium?.url ||
-                    item.snippet?.thumbnails?.default?.url,
-                publishedAt: item.snippet?.publishedAt,
-                youtubeUrl: item.snippet?.resourceId?.videoId
-                    ? `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
-                    : null
-            }));
+                return {
+                    videoId,
+                    title: item.snippet?.title,
+                    channel: item.snippet?.videoOwnerChannelTitle,
+                    thumbnail: pickThumbnail(item.snippet?.thumbnails, videoId),
+                    thumbnailFallback: videoId
+                        ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+                        : null,
+                    publishedAt: item.snippet?.publishedAt,
+                    youtubeUrl: videoId
+                        ? `https://www.youtube.com/watch?v=${videoId}`
+                        : null
+                };
+            });
 
             allVideos.push(...videos);
         }
 
-        console.log("\n===========================");
-        console.log("TOTAL RAW VIDEOS:", allVideos.length);
-
-        const cleaned = allVideos.filter((v) => {
-            const valid = v.videoId && v.title && v.thumbnail;
-
-            if (!valid) {
-                console.log("❌ Filter removed video:", v);
-            }
-
-            return valid;
-        });
+        const cleaned = allVideos.filter(
+            (v) => v.videoId && v.title && v.thumbnail
+        );
 
         cleaned.sort(
             (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
         );
 
-        console.log("FINAL VIDEOS SENT:", cleaned.length);
-
         return cleaned.slice(0, 15);
-
     } catch (error) {
-        console.log("🔥 GLOBAL ERROR:");
-        console.log(error.response?.data || error.message);
+        console.log("YouTube error:", error.response?.data || error.message);
         return [];
     }
 }
