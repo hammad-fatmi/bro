@@ -19,10 +19,10 @@ const parser = new Parser({
 // =========================
 // HELPERS
 // =========================
-const OG_CONCURRENCY = 20;
-const OG_TIMEOUT_SEC = 6;
-const OG_BUDGET_MS = 15000;         // max time we wait for scraping per refresh
-const NULL_TTL_MS = 10 * 60 * 1000; // retry failed scrapes after 10 min
+const OG_CONCURRENCY = 8;
+const OG_TIMEOUT_SEC = 10;
+const OG_BUDGET_MS = 25000;         // max time we wait for scraping per refresh
+const NULL_TTL_MS = 2 * 60 * 1000; // retry failed scrapes after 10 min
 
 const ogCache = new Map(); // url -> { img, at }
 
@@ -35,8 +35,8 @@ const hostname = (url) => {
 };
 
 // Auto-generated social cards come pre-cropped, so never use them
-const BAD_IMAGE = /(social_previews|pixel|tracking|avatar|emoji|gravatar|\.svg)/i;
-
+//const BAD_IMAGE = /(social_previews|pixel|tracking|avatar|emoji|gravatar|\.svg)/i;
+const BAD_IMAGE = /(pixel|tracking|avatar|emoji|gravatar|\.svg)/i;
 const cleanImageUrl = (u, base) => {
     if (!u || typeof u !== 'string') return null;
 
@@ -62,7 +62,36 @@ const imageFromRss = (item) => {
     );
 };
 
+
+const youtubeThumb = (url) => {
+    try {
+        const u = new URL(url);
+        const id = u.hostname.includes('youtu.be')
+            ? u.pathname.slice(1)
+            : u.searchParams.get('v');
+        return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
+    } catch {
+        return null;
+    }
+};
+
+const githubCard = (url) => {
+    try {
+        const u = new URL(url);
+        if (u.hostname !== 'github.com') return null;
+        const [owner, repo] = u.pathname.split('/').filter(Boolean);
+        return owner && repo
+            ? `https://opengraph.githubassets.com/1/${owner}/${repo}`
+            : null;
+    } catch {
+        return null;
+    }
+};
+
 const getOGImage = async (url) => {
+    const direct = youtubeThumb(url) || githubCard(url);
+    if (direct) return direct;
+
     const hit = ogCache.get(url);
     if (hit && (hit.img || Date.now() - hit.at < NULL_TTL_MS)) {
         return hit.img;
@@ -81,18 +110,29 @@ const getOGImage = async (url) => {
             },
         });
 
-        const img =
-            cleanImageUrl(result.ogImage?.[0]?.url, url) ||
-            cleanImageUrl(result.twitterImage?.[0]?.url, url) ||
-            null;
+        const rawOg = result.ogImage?.[0]?.url;
+        const rawTw = result.twitterImage?.[0]?.url;
+
+        const img = cleanImageUrl(rawOg, url) || cleanImageUrl(rawTw, url) || null;
+
+        if (!img) {
+            console.log(
+                `❌ NO IMAGE [${hostname(url)}] og=${rawOg || 'none'} tw=${rawTw || 'none'}` +
+                (rawOg || rawTw ? ' (blocked by BAD_IMAGE/invalid)' : ' (page has no og:image)')
+            );
+        }
 
         ogCache.set(url, { img, at: Date.now() });
         return img;
-    } catch {
+    } catch (err) {
+        const reason =
+            err?.result?.error || err?.result?.errorDetails?.message || err?.message || String(err);
+        console.log(`⚠️ OG SCRAPE FAILED [${hostname(url)}] ${url} -> ${reason}`);
         ogCache.set(url, { img: null, at: Date.now() });
         return null;
     }
 };
+
 
 // Run fn over items with at most `limit` running at once
 const mapLimit = async (items, limit, fn) => {
@@ -194,8 +234,19 @@ async function fetchNews() {
         .filter((r) => r.status === 'fulfilled')
         .flatMap((r) => r.value);
 
+    const withImg = rawNews.filter((a) => a.image).length;
+    const without = rawNews.length - withImg;
+
     console.log('TOTAL RAW NEWS:', rawNews.length);
-    return rawNews;
+    console.log(`🖼️ WITH IMAGE: ${withImg} | 🔲 HIDDEN (no image): ${without}`);
+
+    const missingByHost = {};
+    rawNews.filter((a) => !a.image).forEach((a) => {
+        missingByHost[a.source] = (missingByHost[a.source] || 0) + 1;
+    });
+    console.log('Missing by site:', missingByHost);
+
+    return rawNews.filter((a) => a.image);
 }
 
 export default fetchNews;

@@ -46,10 +46,10 @@ const Navbar = () => {
           className="relative group flex flex-col justify-center active:scale-95 transition"
         >
           <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-purple-600 bg-clip-text text-xl font-black tracking-wider text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:brightness-110 transition duration-300">
-            ByteForge
+            ByteStack
           </span>
           <span className="text-[9px] text-fuchsia-400/70 tracking-[0.3em] font-bold mt-[-2px] pl-0.5">
-            NEWS
+            Intel
           </span>
         </Link>
 
@@ -57,7 +57,7 @@ const Navbar = () => {
         <nav className="hidden md:flex gap-1.5 items-center">
           {["/", "/news", "/trending", "/tech-moves", "/upload"].map(
             (path, i) => {
-              const labels = ["Home", "News Feed", "Tech Insights", "Industry Watch", ""];
+              const labels = ["Home", "Intel Stream", "Tech Insights", "Industry Watch", ""];
 
               return (
                 <Link
@@ -131,7 +131,7 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="md:hidden absolute top-20 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-white/10 p-5 flex flex-col gap-4">
           {["/", "/news", "/trending", "/tech-moves", "/upload"].map((path, i) => {
-            const labels = ["Home", "News", "Trending", "Tech Moves", "Upload"];
+            const labels = ["Home", "News", "Trending", "NEXTFRAME", "Upload"];
 
             return (
               <Link

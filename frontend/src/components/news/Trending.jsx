@@ -30,11 +30,11 @@ const Trending = () => {
       <div className="mx-auto mb-10 max-w-7xl">
         {/* PREMIUM VERTICAL PLATINUM FADE */}
         <h1 className="bg-gradient-to-b from-white via-zinc-100 to-zinc-400 bg-clip-text text-5xl font-black tracking-tight text-transparent drop-shadow-[0_2px_15px_rgba(255,255,255,0.15)]">
-          Trending Now
+          Event Stream
         </h1>
 
         <p className="mt-3 text-zinc-400 text-sm font-medium max-w-2xl">
-          The hottest tech stories ranked by activity, relevance, and recency.
+          
         </p>
       </div>
 

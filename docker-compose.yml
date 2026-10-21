@@ -8,6 +8,8 @@ services:
     container_name: backendc
     image: backendi
     build: ./backend
+    env_file:
+      - ./backend/.env
 
   nginx:
     container_name: nginxc
@@ -15,3 +17,6 @@ services:
     build: ./nginx
     ports:
       - "80:80"
+    depends_on:
+      - frontend
+      - backend

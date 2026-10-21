@@ -19,7 +19,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Link to="/" className="inline-block group">
               <h2 className="text-2xl font-black tracking-wider bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(6,182,212,0.25)] group-hover:brightness-125 transition duration-300">
-                ByteForge
+                ByteStack
               </h2>
               <span className="text-[9px] block text-cyan-400/50 tracking-[0.3em] font-bold mt-[-2px] pl-0.5 group-hover:text-cyan-400 transition duration-300">
                 NEWS
@@ -40,7 +40,7 @@ const Footer = () => {
                 { to: "/", label: "Home" },
                 { to: "/news", label: "News" },
                 { to: "/trending", label: "Tech Insights" },
-                { to: "/tech-moves", label: "Tech Moves" },
+                { to: "/tech-moves", label: "NEXTFRAME" },
                 { to: "/upload", label: "" },
               ].map((link) => (
                 <li key={link.to}>
@@ -90,7 +90,7 @@ const Footer = () => {
             </div>
 
             <p className="text-zinc-600 text-xs font-medium tracking-wide mt-8 md:mt-0">
-              © {new Date().getFullYear()} ByteForge. All rights reserved.
+              © {new Date().getFullYear()} ByteStack. All rights reserved.
             </p>
           </div>
 

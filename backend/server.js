@@ -26,9 +26,10 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 ========================= */
 
 const allowedOrigins = [
+  'http://localhost',
   'http://localhost:5173',
   'http://localhost:5174',   // 
-  'http://ByteForge.duckdns.org'
+  'http://ByteStack.duckdns.org'
 ];
 app.use(cors({
   origin: function (origin, callback) {

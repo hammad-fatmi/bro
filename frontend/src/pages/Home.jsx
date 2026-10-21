@@ -12,7 +12,7 @@ const Home = () => {
             {/* HERO */}
             <Hero />
 
-            {/* VIDEO + TECH MOVES */}
+            {/* VIDEO + NEXTFRAME */}
             <section className="max-w-7xl mx-auto px-4 py-8">
                 <div className="grid lg:grid-cols-5 gap-6">
 

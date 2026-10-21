@@ -13,21 +13,20 @@ const parser = new Parser({
 });
 
 const FEEDS = [
-    "https://techcrunch.com/feed/",
-    "https://www.geekwire.com/feed/",
-    "https://www.theverge.com/rss/index.xml",
-    "https://venturebeat.com/feed/",
-    "https://feeds.arstechnica.com/arstechnica/index",
-    "https://www.zdnet.com/news/rss.xml",
-    "https://www.siliconrepublic.com/feed",
+    "https://feeds.feedburner.com/TheHackersNews",
+    "https://www.bleepingcomputer.com/feed/",
+    "https://krebsonsecurity.com/feed/",
+    "https://www.schneier.com/feed/atom/",
+    "https://www.securityweek.com/feed/",
+    "https://www.darkreading.com/rss.xml",
+    "https://www.eff.org/rss/updates.xml",
+    "https://www.networkworld.com/feed/",
 ];
 
-const ROLE = /\b(ceo|cto|cfo|coo|cio|ciso|cpo|president|vp|vice president|head of|director|founder|chief [a-z]+ officer)\b/i;
-const ACTION = /\b(appoints?|appointed|names?|named|joins?|joined|hires?|hired|promotes?|promoted|steps? down|resigns?|resigned|departs?|exits?|leaves|taps|tapped|poach(es|ed)?)\b/i;
+const TOPIC = /\b(security|privacy|vpn|firewall|encryption|encrypted|malware|ransomware|phishing|breach|vulnerabilit(y|ies)|cve-\d+|zero[- ]day|exploit|ddos|botnet|surveillance|tracking|gdpr|data leak|network(s|ing)?|router|dns|bgp|wi-?fi|5g|cisco|fortinet|palo alto|juniper|cloudflare|wireguard|zero trust|sd-wan|tls|ssl)\b/i;
 
-// title must have an action; role can be in the title or the description
-const isMove = (title, desc = "") =>
-    ACTION.test(title) && (ROLE.test(title) || ROLE.test(desc));
+// topic can be in the title or the description
+const isMove = (title, desc = "") => TOPIC.test(title) || TOPIC.test(desc);
 
 // logos, placeholders, tracking pixels, auto-generated social cards
 const BAD_IMAGE = /(logo|placeholder|placehold|favicon|sprite|pixel|tracking|avatar|gravatar|social_previews|\.svg)/i;
@@ -50,7 +49,7 @@ const cleanImage = (raw, base) => {
 
 const getOG = async (url) => {
     try {
-        const { result } = await ogs({ url, timeout: 4, onlyGetOpenGraphInfo: true });
+        const { result } = await ogs({ url, timeout: 8, onlyGetOpenGraphInfo: true });
         return (
             cleanImage(result.ogImage?.[0]?.url, url) ||
             cleanImage(result.twitterImage?.[0]?.url, url) ||
@@ -167,12 +166,12 @@ export default async function fetchTechMoves() {
     const work = enrich(articles).catch((err) =>
         console.error("Tech moves enrichment failed:", err.message)
     );
-    await withTimeout(work, 8000, null);
+    await withTimeout(work, 15000, null);
 
     // hide internal field from res.json()
     articles.forEach((a) =>
         Object.defineProperty(a, "_ts", { enumerable: false })
     );
 
-    return articles;
+    return articles.filter((a) => a.image);
 }

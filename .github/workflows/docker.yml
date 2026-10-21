@@ -1,0 +1,46 @@
+name: Build and Push Docker Images to ECR
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 678878256416.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: bro
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::678878256416:role/fatmiOIDC
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push frontend
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:frontendi ./frontend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:frontendi
+
+      - name: Build and push backend
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:backendi ./backend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:backendi
+
+      - name: Build and push nginx
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:nginxi ./nginx
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:nginxi

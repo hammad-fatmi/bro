@@ -14,7 +14,7 @@ const TechMoves = () => {
 
       setNews(response.data.data);
     } catch (error) {
-      console.error("Failed to fetch tech moves:", error);
+      console.error("Failed to fetch NEXTFRAME:", error);
     } finally {
       setLoading(false);
     }
@@ -30,11 +30,11 @@ const TechMoves = () => {
       <div className="mx-auto mb-10 max-w-7xl">
         {/* PREMIUM VERTICAL METALLIC GRADIENT */}
         <h1 className="bg-gradient-to-b from-white via-zinc-100 to-zinc-400 bg-clip-text text-5xl font-black tracking-tight text-transparent drop-shadow-[0_2px_15px_rgba(255,255,255,0.15)]">
-          Tech Moves
+          NEXTFRAME
         </h1>
 
         <p className="mt-3 text-zinc-400 text-sm font-medium max-w-2xl">
-          Leadership changes, promotions, hires, and company updates from the tech world.
+          Exposed services, misconfigurations, zero-day vulnerabilities, and real-world attack vectors.
         </p>
       </div>
 
